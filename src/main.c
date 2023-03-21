@@ -27,9 +27,17 @@ void fill_buffer_until(FILE *fp, char until_c, char *buffer,
   buffer[i] = '\0';
 }
 
+char *buffer_to_ptr(char *buffer) {
+  char *ptr;
+
+  ptr = malloc((strlen(buffer) + 1));
+  strcpy(ptr, buffer);
+
+  return ptr;
+}
+
 void parse_tags(struct pgn_tag **tags, size_t *nbr_tags, FILE *fp) {
   char name_buffer[256], value_buffer[256];
-  char *name_ptr, *value_ptr;
   int i;
 
   *tags = NULL;
@@ -40,16 +48,12 @@ void parse_tags(struct pgn_tag **tags, size_t *nbr_tags, FILE *fp) {
     read_until(fp, '"');
     fill_buffer_until(fp, '"', value_buffer, 256);
 
-    name_ptr = malloc((strlen(name_buffer) + 1));
-    value_ptr = malloc((strlen(value_buffer) + 1));
-    strcpy(name_ptr, name_buffer);
-    strcpy(value_ptr, value_buffer);
-
     *tags = realloc(*tags, (i + 1) * sizeof(struct pgn_tag));
-    (*tags)[i] = (struct pgn_tag){name_ptr, value_ptr};
+    (*tags)[i] = (struct pgn_tag){buffer_to_ptr(name_buffer),
+                                  buffer_to_ptr(value_buffer)};
 
-    i++;
     read_until(fp, '\n');
+    i++;
   }
   *nbr_tags = i;
 }
@@ -73,15 +77,15 @@ int main(int argc, char *argv[]) {
   size_t nbr_tags;
 
   if (argc < 2) {
-    printf("No filepath provided, using default [example.pgn]\n");
     file_path = "example.pgn";
+    printf("No filepath provided, using default %s\n", file_path);
   } else {
-    printf("Filepath provided: %s\n", argv[1]);
     file_path = argv[1];
+    printf("Filepath provided: %s\n", file_path);
   }
 
   if ((fp = fopen(file_path, "r")) == NULL) {
-    printf("File not found, exiting\n");
+    printf("File not found, exiting...\n");
     return -1;
   }
 
