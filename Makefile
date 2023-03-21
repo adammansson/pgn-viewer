@@ -1,8 +1,8 @@
 TARGET := pgn-viewer
 
-SOURCE_DIR := src
-SRCS := $(wildcard $(SOURCE_DIR)/*/*.c $(SOURCE_DIR)/*.c)
-HDRS := $(wildcard $(SOURCE_DIR)/*/*.h $(SOURCE_DIR)/*.h)
+SRCS_DIR := src
+SRCS := $(wildcard $(SRCS_DIR)/*/*.c $(SRCS_DIR)/*.c)
+HDRS := $(wildcard $(SRCS_DIR)/*/*.h $(SRCS_DIR)/*.h)
 OBJS := ${SRCS:.c=.o}
 
 CC := cc
