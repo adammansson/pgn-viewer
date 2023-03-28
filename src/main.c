@@ -1,3 +1,4 @@
+#include "pgn_board.h"
 #include "pgn_move.h"
 #include "pgn_tag.h"
 #include <ctype.h>
@@ -14,6 +15,8 @@ int main(int argc, char *argv[]) {
 
   struct pgn_move *moves;
   size_t nbr_moves;
+
+  struct pgn_board *board;
 
   if (argc < 2) {
     file_path = "example.pgn";
@@ -33,4 +36,9 @@ int main(int argc, char *argv[]) {
 
   parse_moves(&moves, &nbr_moves, fp);
   print_moves(moves, nbr_moves);
+
+  board = new_board();
+  print_board(board);
+
+  // preview_moves(moves, nbr_moves);
 }

@@ -1,8 +1,12 @@
+#define POSIX_C_SOURCE 200809L
+
 #include "pgn_tag.h"
 #include "pgn_io.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define PGN_TAG_BUFFER_SIZE 256
 
 static void fill_tag_buffer_until(char until_c, char *tag_buffer,
                                   size_t buffer_size, FILE *fp) {
@@ -10,29 +14,30 @@ static void fill_tag_buffer_until(char until_c, char *tag_buffer,
   char c;
 
   i = 0;
-  while (i < (buffer_size - 1) && (c = fgetc(fp)) != until_c && c != EOF)
+  while ((c = fgetc(fp)) != EOF && i < (buffer_size - 1) && c != until_c)
     tag_buffer[i++] = c;
   tag_buffer[i] = '\0';
   ungetc(c, fp);
 }
 
 void parse_tags(struct pgn_tag **tags, size_t *nbr_tags, FILE *fp) {
-  char name_buffer[256];
-  char value_buffer[256];
+  char name_buffer[PGN_TAG_BUFFER_SIZE];
+  char value_buffer[PGN_TAG_BUFFER_SIZE];
   int tag_counter;
 
   *tags = NULL;
   tag_counter = 0;
   while (fgetc(fp) == '[') {
-    fill_tag_buffer_until(' ', name_buffer, 256, fp);
+    fill_tag_buffer_until(' ', name_buffer, PGN_TAG_BUFFER_SIZE, fp);
 
     read_to('"', fp);
-    fill_tag_buffer_until('"', value_buffer, 256, fp);
+    fill_tag_buffer_until('"', value_buffer, PGN_TAG_BUFFER_SIZE, fp);
 
     *tags = realloc(*tags, (tag_counter + 1) * sizeof(struct pgn_tag));
 
     (*tags)[tag_counter] =
-        (struct pgn_tag){strndup(name_buffer, 256), strndup(value_buffer, 256)};
+        (struct pgn_tag){strndup(name_buffer, PGN_TAG_BUFFER_SIZE),
+                         strndup(value_buffer, PGN_TAG_BUFFER_SIZE)};
 
     read_to('\n', fp);
     tag_counter++;

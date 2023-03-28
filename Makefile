@@ -13,3 +13,7 @@ $(TARGET): $(OBJS) Makefile
 
 run: $(TARGET)
 	./$(TARGET)
+
+clean:
+	$(RM)	$(OBJS)
+	$(RM)	$(TARGET)
