@@ -3,14 +3,15 @@
 
 #include <stdio.h>
 
-struct pgn_move {
-  char *san;
-};
+#define BOARD_SIZE 64
 
-void parse_moves(struct pgn_move **moves, size_t *nbr_moves, FILE *fp);
+void parse_moves(char ***moves, size_t *nbr_moves, FILE *fp);
 
-void print_moves(struct pgn_move *moves, size_t nbr_moves);
+void print_moves(char **moves, size_t nbr_moves);
 
-void preview_moves(struct pgn_move *moves, size_t nbr_moves);
+void print_board(char *board);
+
+void preview_moves(char *board, char **moves, size_t nbr_moves,
+                   size_t moves_left);
 
 #endif /* _PGN_MOVE_H */
