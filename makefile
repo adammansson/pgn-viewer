@@ -6,14 +6,14 @@ HDRS := $(wildcard $(SRCS_DIR)/*/*.h $(SRCS_DIR)/*.h)
 OBJS := ${SRCS:.c=.o}
 
 CC := cc
-CFLAGS := -Wall -Wextra -std=c11 -pedantic
+CFLAGS := -Wall -Wextra -ansi -pedantic
 
-$(TARGET): $(OBJS) Makefile
+$(TARGET): $(OBJS) makefile
 	$(CC) -o $@ $(OBJS) $(CFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)
 
 clean:
-	$(RM)	$(OBJS)
-	$(RM)	$(TARGET)
+	$(RM) $(OBJS)
+	$(RM) $(TARGET)
